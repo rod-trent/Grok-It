@@ -4,9 +4,9 @@
   "version": "2.0",
   "description": "Right-click any text → Grok-it instantly answers in English",
   "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
+    "16": "Icons/icon16.png",
+    "48": "Icons/icon48.png",
+    "128": "Icons/icon128.png"
   },
 
   "permissions": ["contextMenus", "storage", "activeTab", "tabs"],
