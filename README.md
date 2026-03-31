@@ -2,6 +2,8 @@
 
 A Chrome extension that lets you right-click any selected text and instantly get an answer from xAI's Grok — without leaving your browser.
 
+![Grok-it!](https://github.com/rod-trent/Grok-It/blob/main/Images/grokit.jpg)
+
 ## Features
 
 - **Instant answers** — right-click any selected text → Grok-it answers in a popup
