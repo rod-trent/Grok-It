@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grok-it – Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:             #0a0a0a;
+      --surface:        #141414;
+      --surface-raised: #1c1c1c;
+      --border:         #262626;
+      --accent:         #6366f1;
+      --accent-dim:     rgba(99,102,241,0.15);
+      --accent-hover:   #4f52d6;
+      --text-primary:   #f5f5f5;
+      --text-secondary: #a3a3a3;
+      --text-muted:     #525252;
+      --error:          #ef4444;
+      --error-bg:       rgba(239,68,68,0.1);
+      --success:        #22c55e;
+      --success-bg:     rgba(34,197,94,0.1);
+      --radius:         10px;
+      --radius-sm:      6px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      width: 460px;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .page-header img { width: 22px; height: 22px; border-radius: 5px; }
+    .page-header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+    /* ── Tab panes ── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.15s ease-out; }
+
+    /* ── Form elements ── */
+    .field { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .helper {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    .helper a { color: var(--accent); text-decoration: none; }
+    .helper a:hover { text-decoration: underline; }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 11px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus { border-color: var(--accent); }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+    select { cursor: pointer; }
+    select option { background: var(--surface-raised); }
+    textarea { resize: vertical; min-height: 80px; font-family: "Menlo", "Consolas", monospace; font-size: 12px; }
+
+    /* Number input with limits */
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
+
+    /* ── Range slider ── */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      padding: 0;
+      border: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .slider-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .toggle-track::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      top: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--accent-dim); border-color: var(--accent); }
+    .toggle input:checked + .toggle-track::before { transform: translateX(18px); background: var(--accent); }
+    .toggle-label { font-size: 13px; color: var(--text-primary); user-select: none; }
+
+    /* ── Buttons ── */
+    .btn {
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 16px;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .btn-secondary:hover { background: var(--border); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    /* ── Key input row ── */
+    .key-input-wrap { position: relative; flex: 1; }
+    .key-input-wrap input { padding-right: 40px; }
+    .show-key-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    .show-key-btn:hover { color: var(--text-primary); }
+    .show-key-btn svg { width: 15px; height: 15px; }
+
+    /* ── Status message ── */
+    .status {
+      font-size: 12px;
+      padding: 8px 11px;
+      border-radius: var(--radius-sm);
+      margin-top: 10px;
+      display: none;
+    }
+    .status.success { background: var(--success-bg); color: var(--success); display: block; }
+    .status.error   { background: var(--error-bg);   color: var(--error);   display: block; }
+    .status.info    { background: var(--surface-raised); color: var(--text-secondary); border: 1px solid var(--border); display: block; }
+
+    /* ── Model badge ── */
+    .model-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-top: 6px;
+    }
+
+    /* ── Reset link ── */
+    .reset-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-family: inherit;
+      padding: 0;
+      margin-top: 5px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.15s;
+    }
+    .reset-link:hover { color: var(--text-primary); }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <img src="icon.png" alt="">
+    <h1>Grok-it Settings</h1>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" data-tab="tab-key">API Key</button>
+    <button class="tab-btn" data-tab="tab-model">Model</button>
+    <button class="tab-btn" data-tab="tab-params">Parameters</button>
+    <button class="tab-btn" data-tab="tab-prompt">Prompt</button>
+  </div>
+
+  <!-- Tab: API Key -->
+  <div id="tab-key" class="tab-pane active">
+    <div class="field">
+      <label>xAI API Key</label>
+      <div class="input-row">
+        <div class="key-input-wrap">
+          <input id="key-input" type="password" placeholder="xai-…">
+          <button class="show-key-btn" id="toggle-key-visibility" title="Show / hide key">
+            <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="helper">Get a free key at <a href="https://console.x.ai" target="_blank">console.x.ai</a></p>
+    </div>
+    <div class="btn-row">
+      <button id="btn-save-key" class="btn btn-primary">Save Key</button>
+      <button id="btn-test" class="btn btn-secondary">Test Connection</button>
+    </div>
+    <div id="key-status" class="status"></div>
+  </div>
+
+  <!-- Tab: Model -->
+  <div id="tab-model" class="tab-pane">
+    <div class="field">
+      <label>Active Model</label>
+      <select id="model-select"></select>
+      <div id="model-badge" class="model-badge" style="display:none">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        <span id="model-badge-text"></span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button id="btn-save-model" class="btn btn-primary">Save Model</button>
+      <button id="btn-refresh-models" class="btn btn-secondary">Refresh Models</button>
+    </div>
+    <div id="model-status" class="status"></div>
+  </div>
+
+  <!-- Tab: Parameters -->
+  <div id="tab-params" class="tab-pane">
+    <div class="field">
+      <label>Temperature</label>
+      <div class="slider-row">
+        <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+        <span class="slider-value" id="temperature-value">0.7</span>
+      </div>
+      <p class="helper">Controls randomness. Lower = more focused, higher = more creative.</p>
+    </div>
+    <hr>
+    <div class="field">
+      <label>Max Tokens</label>
+      <input type="number" id="max-tokens" min="100" max="4096" step="50" value="1500">
+      <p class="helper">Maximum length of the response. Higher = longer answers, more API usage.</p>
+    </div>
+    <div class="btn-row">
+      <button id="btn-save-params" class="btn btn-primary">Save Parameters</button>
+    </div>
+    <div id="params-status" class="status"></div>
+  </div>
+
+  <!-- Tab: Prompt -->
+  <div id="tab-prompt" class="tab-pane">
+    <div class="field">
+      <label>System Prompt</label>
+      <textarea id="system-prompt" rows="5" placeholder="You are Grok. Always respond in clear, natural English."></textarea>
+      <button class="reset-link" id="btn-reset-prompt">Reset to default</button>
+    </div>
+    <hr>
+    <div class="field">
+      <label>Context Awareness</label>
+      <label class="toggle-row">
+        <span class="toggle">
+          <input type="checkbox" id="context-aware" checked>
+          <span class="toggle-track"></span>
+        </span>
+        <span class="toggle-label">Include page URL and title in prompts</span>
+      </label>
+      <p class="helper" style="margin-top:8px">When enabled, Grok receives the URL and title of the page where you selected text, helping it give more relevant answers.</p>
+    </div>
+    <div class="btn-row">
+      <button id="btn-save-prompt" class="btn btn-primary">Save</button>
+    </div>
+    <div id="prompt-status" class="status"></div>
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

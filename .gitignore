@@ -1,0 +1,19 @@
+# Environment / secrets
+.env
+.env.*
+*.env
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (if build tooling is ever added)
+node_modules/
+dist/
