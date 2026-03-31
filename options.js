@@ -1,10 +1,11 @@
 import {
   STORAGE_KEY_API_KEY, STORAGE_KEY_MODEL, STORAGE_KEY_TEMPERATURE,
   STORAGE_KEY_MAX_TOKENS, STORAGE_KEY_SYSTEM_PROMPT, STORAGE_KEY_CONTEXT_AWARE,
-  STORAGE_KEY_AVAIL_MODELS,
+  STORAGE_KEY_AVAIL_MODELS, STORAGE_KEY_THEME,
   DEFAULT_MODEL, DEFAULT_TEMPERATURE, DEFAULT_MAX_TOKENS, DEFAULT_SYSTEM_PROMPT,
   XAI_MODELS_ENDPOINT
 } from './constants.js';
+import { applyTheme } from './theme.js';
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 
@@ -20,10 +21,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // ── Load all settings on open ─────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
+  await applyTheme();
+
   const data = await new Promise(resolve =>
     chrome.storage.sync.get([
       STORAGE_KEY_API_KEY, STORAGE_KEY_MODEL, STORAGE_KEY_TEMPERATURE,
-      STORAGE_KEY_MAX_TOKENS, STORAGE_KEY_SYSTEM_PROMPT, STORAGE_KEY_CONTEXT_AWARE
+      STORAGE_KEY_MAX_TOKENS, STORAGE_KEY_SYSTEM_PROMPT, STORAGE_KEY_CONTEXT_AWARE,
+      STORAGE_KEY_THEME
     ], resolve)
   );
 
@@ -49,6 +53,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     data[STORAGE_KEY_SYSTEM_PROMPT] || '';
   document.getElementById('context-aware').checked =
     data[STORAGE_KEY_CONTEXT_AWARE] !== false; // default true
+
+  // Theme picker
+  setActiveSegment('theme-picker', data[STORAGE_KEY_THEME] || 'system');
 
   wireUpControls();
 });
@@ -169,6 +176,16 @@ function wireUpControls() {
     showStatus('params-status', 'Parameters saved.', 'success');
   });
 
+  // ── Prompt tab — theme picker ──
+  document.querySelectorAll('#theme-picker .segment-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const value = btn.dataset.value;
+      setActiveSegment('theme-picker', value);
+      await saveToSync({ [STORAGE_KEY_THEME]: value });
+      applyTheme(); // live preview
+    });
+  });
+
   // ── Prompt tab ──
   document.getElementById('btn-reset-prompt').addEventListener('click', () => {
     document.getElementById('system-prompt').value = DEFAULT_SYSTEM_PROMPT;
@@ -220,6 +237,12 @@ async function testConnection(apiKey) {
   } catch (err) {
     return { ok: false, message: `Network error: ${err.message}` };
   }
+}
+
+function setActiveSegment(containerId, value) {
+  document.querySelectorAll(`#${containerId} .segment-btn`).forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === value);
+  });
 }
 
 function showStatus(id, message, type) {

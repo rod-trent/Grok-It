@@ -13,6 +13,7 @@ export const STORAGE_KEY_CONTEXT_AWARE  = "contextAware";
 
 // Storage keys (chrome.storage.local)
 export const STORAGE_KEY_HISTORY        = "queryHistory";
+export const STORAGE_KEY_THEME          = "theme"; // "system" | "light" | "dark"
 export const STORAGE_KEY_AVAIL_MODELS   = "availableModels";
 
 // Session storage keys

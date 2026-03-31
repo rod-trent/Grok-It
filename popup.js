@@ -3,6 +3,7 @@ import {
   MSG_STREAM_CHUNK, MSG_STREAM_DONE, MSG_STREAM_ERROR
 } from './constants.js';
 import { loadHistory, clearHistory } from './history.js';
+import { applyTheme } from './theme.js';
 
 // ── Icons (inline SVG strings) ────────────────────────────────────────────────
 
@@ -35,6 +36,8 @@ const sendBtn         = document.getElementById('btn-send');
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
+  await applyTheme();
+
   // Read and clear session storage
   const session = await new Promise(resolve =>
     chrome.storage.session.get([SESSION_KEY_PROMPT, SESSION_KEY_PAGE_CONTEXT], resolve)
