@@ -22,6 +22,8 @@ A Chrome extension that lets you right-click any selected text and instantly get
 - Google Chrome 116 or newer
 - A free xAI API key from [console.x.ai](https://console.x.ai)
 
+**NOTE:** This can also be obtained from the Chrome Web Store: https://chromewebstore.google.com/detail/grok-it/dhbfcbdhkcdpincgknfflkghjedoicnh
+
 ### Steps
 
 1. Clone or download this repository
